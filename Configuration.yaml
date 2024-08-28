@@ -1,0 +1,74 @@
+{
+  proxy-groups: [
+    {
+      name: "Selector",
+      type: select,
+      disable-udp: false,
+      use: ['account']
+    },
+    {
+      name: "Relay",
+      type: relay,
+      proxies: [
+        "Auto",
+        "Fallback",
+        "Round Robin",
+        "Consistent Hashing"
+      ]
+    },
+    {
+      name: "Auto",
+      type: url-test,
+      use: [
+        'account'
+      ],
+      url: 'https://cp.cloudflare.com/generate_204',
+      interval: 300,
+      lazy: true,
+      disable-udp: true,
+      tolerance: 150
+    },
+    {
+      name: "Fallback",
+      type: fallback,
+      use: [
+        'account'
+      ],
+      url: 'https://cp.cloudflare.com/generate_204',
+      interval: 300,
+      lazy: true,
+      disable-udp: true
+    },
+    {
+      name: "Consistent Hashing",
+      type: load-balance,
+      use: [
+        'account'
+      ],
+      url: 'https://cp.cloudflare.com/generate_204',
+      interval: 300,
+      lazy: true,
+      disable-udp: true,
+      strategy: 'consistent-hashing'
+    },
+    {
+      name: "Round Robin",
+      type: load-balance,
+      use: [
+        'account'
+      ],
+      url: 'https://cp.cloudflare.com/generate_204',
+      interval: 300,
+      lazy: true,
+      disable-udp: true,
+      strategy: 'round-robin'
+    }
+  ],
+  proxy-providers: { 
+    'account': { 
+      type: file,
+      path: "./account.yaml"
+    }
+  },
+  rules: [ 'MATCH,GLOBAL' ]
+}
